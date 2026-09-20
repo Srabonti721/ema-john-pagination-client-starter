@@ -3,16 +3,26 @@ import { addToDb, deleteShoppingCart, getShoppingCart } from '../../utilities/fa
 import Cart from '../Cart/Cart';
 import Product from '../Product/Product';
 import './Shop.css';
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link, useLoaderData, } from 'react-router-dom';
 
 const Shop = () => {
-    const [products, setProducts] = useState([]);
-    const [cart, setCart] = useState([])
-const {count} = useLoaderData();
-const itemsPerPage = 10;
-const itemOfNumber = Math.ceil(count/itemsPerPage);
+    const [products, setProducts] = useState([]); 
+    const [cart, setCart] = useState([]);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const {count} = useLoaderData();
+    const totalPages = Math.ceil(count/itemsPerPage);
 
-const pages = [...Array(itemOfNumber).keys()]
+    const pages = [...Array(totalPages).keys()];
+    console.log(pages)
+    
+    
+
+
+    useEffect(()=>{
+        fetch("http://localhost:5000/products")
+            .then(res => res.json())
+            .then(data => setProducts(data))
+    },[])
 
     useEffect(() => {
         const storedCart = getShoppingCart();
@@ -59,6 +69,10 @@ const pages = [...Array(itemOfNumber).keys()]
         setCart([]);
         deleteShoppingCart();
     }
+    const handleSelectPerPage = (e)=>{
+        const val = parseInt(e.target.value);
+        setItemsPerPage(val)
+    }
 
     return (
         <div className='shop-container'>
@@ -83,9 +97,16 @@ const pages = [...Array(itemOfNumber).keys()]
             </div>
             <div className="pagination">
                 {
-                    pages.map(page => <button key={page}>{page + 1}</button>)
+                    pages.map(page=><button key={page}>{page + 1}</button>)
                 }
+                <select value={itemsPerPage} onChange={handleSelectPerPage}>
+                    <option value="5">5 per page</option>
+                    <option value="10">10 per page</option>
+                    <option value="20">20 per page</option>
+                    <option value="50">50 per page</option>
+                </select>
             </div>
+
         </div>
     );
 };
