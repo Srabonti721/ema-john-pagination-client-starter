@@ -30,6 +30,8 @@
 margin-bottom:40px
 }
 .pagination button{
-    margin-left:10px;
-    background-color:#FF9900;
+    margin-right:5px;
+}
+.pagination .selected{
+    background-color:#FF9900
 }
